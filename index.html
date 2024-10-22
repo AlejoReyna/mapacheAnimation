@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <style>
+        body {
+            background-color: black;
+            color: #33ff33;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            font-family: monospace;
+        }
+        
+        #container {
+            position: relative;
+            white-space: pre;
+            text-align: center;
+        }
+        
+        #speech-bubble {
+            position: absolute;
+            top: -80px;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: white;
+            color: black;
+            padding: 10px 20px;
+            border-radius: 20px;
+            opacity: 0;
+            transition: opacity 0.5s;
+            min-width: 200px;
+            min-height: 20px;
+        }
+        
+        #speech-bubble:after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            border-width: 10px 10px 0;
+            border-style: solid;
+            border-color: white transparent transparent;
+        }
+        
+        @keyframes sip {
+            0% { transform: rotate(0deg); }
+            50% { transform: rotate(30deg); }
+            100% { transform: rotate(0deg); }
+        }
+        
+        .sipping {
+            animation: sip 1s ease-in-out;
+        }
+
+        #caption {
+            margin-top: 20px;
+            font-style: italic;
+            color: #666666;
+            opacity: 1;
+            transition: opacity 0.5s ease-in-out;
+        }
+
+        .fade-out {
+            opacity: 0 !important;
+        }
+    </style>
+</head>
+<body>
+    <div id="container">
+        <div id="speech-bubble"></div>
+        <pre id="raccoon">
+    /\___/\
+   (  o o  )
+   (  =^=  ) 
+    (--U--) ))
+     (__)__))
+      |  |
+     _|  |_
+    |_)==(__|
+    </pre>
+        <div id="caption">(Se supone que es un mapache, y parece que quiere decir algo...)</div>
+    </div>
+
+    <script>
+        const messages = [
+            "¡Hola!",
+            "*sip*",
+            "Tecnicamente esto no es hablar",
+            "*sip*",
+            "Así que, quizás sea un buen momento para decir buen día",
+            "*sip*",
+            "o adiós también",
+            "*sip*",
+            "no te enojes u w u",
+            "*sip*"
+        ];
+
+        const bubble = document.getElementById('speech-bubble');
+        const raccoon = document.getElementById('raccoon');
+        const caption = document.getElementById('caption');
+        let currentMessage = 0;
+        let sipCount = 0;
+
+        function typeWriter(text, element, speed = 50) {
+            let i = 0;
+            element.textContent = '';
+            
+            if (text !== "¡Hola!") {
+                caption.classList.add('fade-out');
+            }
+            
+            function type() {
+                if (i < text.length) {
+                    element.textContent += text.charAt(i);
+                    i++;
+                    setTimeout(type, speed);
+                }
+            }
+            
+            type();
+        }
+        
+        function updateCaption() {
+            caption.classList.add('fade-out');
+            setTimeout(() => {
+                if (sipCount === 4) { // Último sorbo (después de "no te enojes u w u")
+                    caption.textContent = "(¡Qué rico es el café!)";
+                } else {
+                    caption.textContent = "(El mapache ha dado un sorbo a su café)";
+                }
+                caption.classList.remove('fade-out');
+            }, 500);
+        }
+
+        function showMessage() {
+            bubble.style.opacity = '1';
+            
+            if (messages[currentMessage] === "*sip*") {
+                bubble.textContent = messages[currentMessage];
+                raccoon.classList.add('sipping');
+                updateCaption();
+                sipCount++;
+                setTimeout(() => {
+                    raccoon.classList.remove('sipping');
+                }, 1000);
+                
+                setTimeout(() => {
+                    bubble.style.opacity = '0';
+                    setTimeout(() => {
+                        currentMessage = (currentMessage + 1) % messages.length;
+                        showMessage();
+                    }, 500);
+                }, 2000);
+            } else {
+                typeWriter(messages[currentMessage], bubble);
+                
+                setTimeout(() => {
+                    bubble.style.opacity = '0';
+                    setTimeout(() => {
+                        currentMessage = (currentMessage + 1) % messages.length;
+                        showMessage();
+                    }, 500);
+                }, messages[currentMessage].length * 50 + 2000); // Ajustamos el tiempo según la longitud del mensaje
+            }
+        }
+        
+        showMessage();
+    </script>
+</body>
+</html>
