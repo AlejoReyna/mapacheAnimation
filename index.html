@@ -1,6 +1,8 @@
 <!DOCTYPE html>
-<html>
+<html lang="es">
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <style>
         body {
             background-color: black;
@@ -11,15 +13,18 @@
             height: 100vh;
             margin: 0;
             font-family: monospace;
+            overflow: hidden; /* Evitar scrolls indeseados */
         }
         
         #container {
             position: relative;
             white-space: pre;
             text-align: center;
+            padding: 20px; /* Agrega un poco de espacio alrededor */
         }
         
         #speech-bubble {
+            font-size: 1.2rem;
             position: absolute;
             top: -80px;
             left: 50%;
@@ -32,6 +37,8 @@
             transition: opacity 0.5s;
             min-width: 200px;
             min-height: 20px;
+            max-width: 90vw; /* Asegura que no se desborde en móviles */
+            box-sizing: border-box; /* Incluye padding en el ancho total */
         }
         
         #speech-bubble:after {
@@ -61,6 +68,16 @@
             color: #666666;
             opacity: 1;
             transition: opacity 0.5s ease-in-out;
+            font-size: 1.5em; /* Aumenta el tamaño del texto para mayor legibilidad */
+        }
+
+        @media (max-width: 600px) {
+            #raccoon {
+                font-size: 2em; /* Ajusta el tamaño del raccoon para móviles */
+            }
+            #caption {
+                font-size: 1.4em; /* Ajusta el tamaño del caption para móviles */
+            }
         }
 
         .fade-out {
@@ -88,7 +105,7 @@
         const messages = [
             "¡Hola!",
             "*sip*",
-            "Tecnicamente esto no es hablar",
+            "Técnicamente esto no es hablar",
             "*sip*",
             "Así que, quizás sea un buen momento para decir buen día",
             "*sip*",
@@ -137,7 +154,16 @@
 
         function showMessage() {
             bubble.style.opacity = '1';
-            
+
+            // Muestra la leyenda al inicio de cada loop
+            if (currentMessage === 0) {
+                caption.classList.add('fade-out');
+                setTimeout(() => {
+                    caption.textContent = "(Parece que el mapache quiere decir algo...)";
+                    caption.classList.remove('fade-out');
+                }, 500);
+            }
+
             if (messages[currentMessage] === "*sip*") {
                 bubble.textContent = messages[currentMessage];
                 raccoon.classList.add('sipping');
