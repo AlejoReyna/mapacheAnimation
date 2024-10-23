@@ -13,16 +13,16 @@
             height: 100vh;
             margin: 0;
             font-family: monospace;
-            overflow: hidden; /* Evitar scrolls indeseados */
+            overflow: hidden;
         }
-        
+
         #container {
             position: relative;
             white-space: pre;
             text-align: center;
-            padding: 20px; /* Agrega un poco de espacio alrededor */
+            padding: 20px;
         }
-        
+
         #speech-bubble {
             font-size: 0.9rem;
             position: absolute;
@@ -37,10 +37,10 @@
             transition: opacity 0.5s;
             min-width: 200px;
             min-height: 20px;
-            max-width: 90vw; /* Asegura que no se desborde en móviles */
-            box-sizing: border-box; /* Incluye padding en el ancho total */
+            max-width: 90vw;
+            box-sizing: border-box;
         }
-        
+
         #speech-bubble:after {
             content: '';
             position: absolute;
@@ -51,13 +51,13 @@
             border-style: solid;
             border-color: white transparent transparent;
         }
-        
+
         @keyframes sip {
             0% { transform: rotate(0deg); }
             50% { transform: rotate(30deg); }
             100% { transform: rotate(0deg); }
         }
-        
+
         .sipping {
             animation: sip 1s ease-in-out;
         }
@@ -68,15 +68,15 @@
             color: #666666;
             opacity: 1;
             transition: opacity 0.5s ease-in-out;
-            font-size: 1.2em; /* Aumenta el tamaño del texto para mayor legibilidad */
+            font-size: 1.2em;
         }
 
         @media (max-width: 600px) {
             #raccoon {
-                font-size: 1.5em; /* Ajusta el tamaño del raccoon para móviles */
+                font-size: 1.5em;
             }
             #caption {
-                font-size: 0.9em; /* Ajusta el tamaño del caption para móviles */
+                font-size: 0.9em;
             }
         }
 
@@ -86,116 +86,162 @@
     </style>
 </head>
 <body>
-    <div id="container">
-        <div id="speech-bubble"></div>
-        <pre id="raccoon">
+<div id="container">
+    <div id="speech-bubble"></div>
+    <pre id="raccoon">
     /\___/\
    (  o o  )
-   (  =^=  ) 
+   (  =^=  )
     (--U--) ))
      (__)__))
       |  |
      _|  |_
     |_)==(__|
-    </pre>
-        <div id="caption">(Se supone que es un mapache, y parece que quiere decir algo...)</div>
-    </div>
+        </pre>
+    <div id="caption">(Se supone que es un mapache, y parece que quiere decir algo...)</div>
+</div>
 
-    <script>
-        const messages = [
-            "¡Hola!",
-            "*sip*",
-            "Técnicamente esto no es hablar",
-            "*sip*",
-            "Así que, quizás sea un buen momento...",
-            "*sip*",
-             "para decir buen día",
-            "*sip*",
-            "o adiós también",
-            "*sip*",
-            "no te enojes u w u",
-            "*sip*"
-        ];
+<script>
+    function getPositiveMessage(hour) {
+        const messages = {
+            0: "¡La noche es joven y llena de posibilidades!",
+            1: "Incluso a esta hora, hay estrellas que brillan para ti",
+            2: "El silencio de la madrugada trae paz interior",
+            3: "Cada nuevo día es una nueva oportunidad",
+            4: "El amanecer está cerca, ¡nuevas aventuras te esperan!",
+            5: "Los primeros rayos del sol traen nueva energía",
+            6: "¡Empieza el día con una sonrisa!",
+            7: "La mañana es perfecta para nuevos comienzos",
+            8: "¡Aprovecha la energía de la mañana!",
+            9: "Hoy será un día extraordinario",
+            10: "¡El día está lleno de oportunidades!",
+            11: "¡Estás haciendo un trabajo increíble!",
+            12: "¡El sol está en su punto más alto, como tu ánimo!",
+            13: "La tarde es perfecta para lograr tus metas",
+            14: "¡Mantén ese espíritu brillante!",
+            15: "La mejor parte del día está por venir",
+            16: "¡Cada momento es una oportunidad para brillar!",
+            17: "El atardecer trae nuevas promesas",
+            18: "Las mejores ideas llegan con el atardecer",
+            19: "La noche está llena de magia y posibilidades",
+            20: "¡Es hora de celebrar tus logros del día!",
+            21: "Las estrellas brillan especialmente para ti",
+            22: "Los sueños más dulces están por venir",
+            23: "Descansa con la satisfacción de un día bien vivido"
+        };
+        return messages[hour];
+    }
 
-        const bubble = document.getElementById('speech-bubble');
-        const raccoon = document.getElementById('raccoon');
-        const caption = document.getElementById('caption');
-        let currentMessage = 0;
-        let sipCount = 0;
+    function getCurrentTimeInLima() {
+        const options = {
+            timeZone: 'America/Lima',
+            hour: '2-digit',
+            minute: '2-digit',
+            hour12: false
+        };
+        return new Date().toLocaleTimeString('es-PE', options);
+    }
 
-        function typeWriter(text, element, speed = 50) {
-            let i = 0;
-            element.textContent = '';
-            
-            if (text !== "¡Hola!") {
-                caption.classList.add('fade-out');
-            }
-            
-            function type() {
-                if (i < text.length) {
-                    element.textContent += text.charAt(i);
-                    i++;
-                    setTimeout(type, speed);
-                }
-            }
-            
-            type();
+    const messages = [
+        "¡Parece que has vuelto a visitar la página!",
+        "*sip*",
+        function() { return `Son las ${getCurrentTimeInLima()} en Lima, Perú`; },
+        "*sip*",
+        function() {
+            const hour = new Date().toLocaleString('es-PE', {
+                timeZone: 'America/Lima',
+                hour: 'numeric',
+                hour12: false
+            });
+            return getPositiveMessage(parseInt(hour));
+        },
+        "*sip*",
+        "¡Hablemos cuando quieras!",
+        "*sip*"
+    ];
+
+    const bubble = document.getElementById('speech-bubble');
+    const raccoon = document.getElementById('raccoon');
+    const caption = document.getElementById('caption');
+    let currentMessage = 0;
+    let sipCount = 0;
+
+    function typeWriter(text, element, speed = 50) {
+        let i = 0;
+        element.textContent = '';
+
+        if (text !== messages[0]) {
+            caption.classList.add('fade-out');
         }
-        
-        function updateCaption() {
+
+        function type() {
+            if (i < text.length) {
+                element.textContent += text.charAt(i);
+                i++;
+                setTimeout(type, speed);
+            }
+        }
+
+        type();
+    }
+
+    function updateCaption() {
+        caption.classList.add('fade-out');
+        setTimeout(() => {
+            if (currentMessage === messages.length - 1) {
+                caption.textContent = "(Vuelve cada hora para un mensaje nuevo)";
+            } else {
+                caption.textContent = "(El mapache ha dado un sorbo a su café)";
+            }
+            caption.classList.remove('fade-out');
+        }, 500);
+    }
+
+    function showMessage() {
+        bubble.style.opacity = '1';
+
+        if (currentMessage === 0) {
             caption.classList.add('fade-out');
             setTimeout(() => {
-                if (sipCount === 4) { // Último sorbo (después de "no te enojes u w u")
-                    caption.textContent = "(¡Qué rico es el café!)";
-                } else {
-                    caption.textContent = "(El mapache ha dado un sorbo a su café)";
-                }
+                caption.textContent = "(Parece que el mapache quiere decir algo...)";
                 caption.classList.remove('fade-out');
             }, 500);
         }
 
-        function showMessage() {
-            bubble.style.opacity = '1';
+        let currentText = typeof messages[currentMessage] === 'function'
+            ? messages[currentMessage]()
+            : messages[currentMessage];
 
-            // Muestra la leyenda al inicio de cada loop
-            if (currentMessage === 0) {
-                caption.classList.add('fade-out');
+        if (currentText === "*sip*") {
+            bubble.textContent = currentText;
+            raccoon.classList.add('sipping');
+            updateCaption();
+            sipCount++;
+            setTimeout(() => {
+                raccoon.classList.remove('sipping');
+            }, 1000);
+
+            setTimeout(() => {
+                bubble.style.opacity = '0';
                 setTimeout(() => {
-                    caption.textContent = "(Parece que el mapache quiere decir algo...)";
-                    caption.classList.remove('fade-out');
+                    currentMessage = (currentMessage + 1) % messages.length;
+                    showMessage();
                 }, 500);
-            }
+            }, 2000);
+        } else {
+            typeWriter(currentText, bubble);
 
-            if (messages[currentMessage] === "*sip*") {
-                bubble.textContent = messages[currentMessage];
-                raccoon.classList.add('sipping');
-                updateCaption();
-                sipCount++;
+            setTimeout(() => {
+                bubble.style.opacity = '0';
                 setTimeout(() => {
-                    raccoon.classList.remove('sipping');
-                }, 1000);
-                
-                setTimeout(() => {
-                    bubble.style.opacity = '0';
-                    setTimeout(() => {
-                        currentMessage = (currentMessage + 1) % messages.length;
-                        showMessage();
-                    }, 500);
-                }, 2000);
-            } else {
-                typeWriter(messages[currentMessage], bubble);
-                
-                setTimeout(() => {
-                    bubble.style.opacity = '0';
-                    setTimeout(() => {
-                        currentMessage = (currentMessage + 1) % messages.length;
-                        showMessage();
-                    }, 500);
-                }, messages[currentMessage].length * 50 + 2000); // Ajustamos el tiempo según la longitud del mensaje
-            }
+                    currentMessage = (currentMessage + 1) % messages.length;
+                    showMessage();
+                }, 500);
+            }, currentText.length * 50 + 2000);
         }
-        
-        showMessage();
-    </script>
+    }
+
+    showMessage();
+</script>
 </body>
 </html>
